@@ -11,6 +11,7 @@
     file:
       state: directory
       dest: "/var/www/web"
+    register: y
     tags: web-git
 
   - name: configure web server
@@ -23,8 +24,12 @@
   - name: copy web page from url
     get_url:
       dest: "/var/www/web"
-      url:  
+      url: "https://github.com/imneeteeshyadav98/Ansible_httpdConfigure/blob/master/webPage/index.html"
     when: y.failed == false
     tags: web-git
-    
+  handlers:
+  - name: service httpd restrat
+    service:
+      name: httpd
+      state:  restrated
   
