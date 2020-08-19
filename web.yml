@@ -1,0 +1,30 @@
+- hosts: web
+  tasks:
+  - name: "Install Httpd server"
+    package:
+      name: httpd
+      state: present
+    when: ansible_distribution == "RedHat"
+    register: x
+  
+  - name: create directory
+    file:
+      state: directory
+      dest: "/var/www/web"
+    tags: web-git
+
+  - name: configure web server
+    template:
+      dest: /etc/httpd/conf.d/web.conf
+      src:  template/web.conf.j2
+    when: x.rc == 0
+    tags: web-configure
+  
+  - name: copy web page from url
+    get_url:
+      dest: "/var/www/web"
+      url:  
+    when: y.failed == false
+    tags: web-git
+    
+  
